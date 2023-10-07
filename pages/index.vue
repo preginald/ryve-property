@@ -1,36 +1,74 @@
 <template>
     <div class="p-10">
         <div>
-            <h1>Ryve Investment Strategiser</h1>
+            <h1>RYVE Investment Strategiser</h1>
         </div>
-        <div class="grid gap-6 mb-6 md:grid-cols-2">
-            <div>
-                <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
-                <input type="text" id="first_name" placeholder="John" required>
+        <label for="entity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an entity to add</label>
+        <button @click="toggleIndividualForm" type="button">Individual</button>
+        <button @click="toggleIndividualForm" type="button">Company</button>
+        <div v-if="showIndividualForm" class="m-5">
+            <div class="grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                    <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                    <input type="text" v-model="individualFormData.first_name" id="first_name" placeholder="John" required>
+                </div>
+                <div>
+                    <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                    <input type="text" v-model="individualFormData.last_name" id="last_name" placeholder="Doe" required>
+                </div>
+                <div>
+                    <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
+                    <input type="tel" v-model="individualFormData.phone_number" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+                </div>
+                <div>
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
+                    <input type="email" v-model="individualFormData.email" id="email" placeholder="john.doe@company.com" required>
+                </div>
             </div>
-            <div>
-                <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-                <input type="text" id="last_name" placeholder="Doe" required>
+            <div class="flex items-start mb-6">
+                <div class="flex items-center h-5">
+                <input id="remember" v-model="individualFormData.compliance" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
+                </div>
+                <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
             </div>
-            <div>
-                <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-                <input type="text" id="company" placeholder="Flowbite" required>
-            </div>  
-            <div>
-                <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
-                <input type="tel" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+
+            <button @click="addToEntities" type="button" class="mt-5">Add Entity</button>
+            
+        </div>
+        
+        <div v-if="entities.length > 0" class="mt-10">
+            <h2>Entities</h2>
+            <div class="grid gap-6 mb-6 md:grid-cols-3">
+                <div v-for="entity in entities" class="m-5 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ entity.label }}</h5>
+                    <div v-if="entity.type==='individual'" class="grid gap-6 mb-6 md:grid-cols-2">
+                        <div>
+                            <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                            <input v-model="entity.first_name" type="text" id="first_name" placeholder="John" required>
+                        </div>
+                        <div>
+                            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                            <input v-model="entity.last_name" type="text" id="last_name" placeholder="Doe" required>
+                        </div>
+                        <div>
+                            <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
+                            <input v-model="entity.phone_number" type="tel" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
+                        <input v-model="entity.email" type="email" id="email" placeholder="john.doe@company.com" required>
+                    </div> 
+                    <div class="flex items-start mb-6">
+                        <div class="flex items-center h-5">
+                        <input v-model="entity.compliance" id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
+                        </div>
+                        <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="mb-6">
-            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-            <input type="email" id="email" placeholder="john.doe@company.com" required>
-        </div> 
-        <div class="flex items-start mb-6">
-            <div class="flex items-center h-5">
-            <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
-            </div>
-            <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
-        </div>
+        
         <div>
             <label for="assets" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">What is your first type of asset?</label>
             <select v-model="selectedAsset">
@@ -41,7 +79,7 @@
                 </option>
             </select>
 
-            <button @click="addToAssets" type="button" class="mt-5">Add to portfolio!</button>
+            <button @click="addToAssets" type="button" class="mt-5">Add Asset</button>
             
         </div>
         <div v-if="assets.length > 0">
@@ -126,6 +164,15 @@
             <h4>Debug</h4>
             <div>
                 <p>
+                    Individual form: {{ showIndividualForm }}
+                </p>
+                <p>
+                    Individual form data: {{ individualFormData }}
+                </p>
+                <p>
+                    Entities: {{ entities }}
+                </p>
+                <p>
                     assets: {{ assets }}
                 </p>
                 <p>
@@ -137,15 +184,49 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 
+let showIndividualForm = ref(false)
+let entities = ref([]);
 let assets = ref([]);
 let selectedAsset = {};  
+
+let individualFormData = {
+    type: "individual", 
+    label: "Individual",
+    first_name: "Peter",
+    last_name: "Reginald",
+    phone_number: "0401573619",
+    email: "peter@reginald.au",
+    compliance: false
+}
+
+const toggleIndividualForm = () => {
+    showIndividualForm.value = !showIndividualForm.value
+}
+
+const addToEntities = () => {
+    // clone individualFormData and push it to entities
+    entities.value.push({...individualFormData})
+    closeIndividualForm()
+}
+
+const closeIndividualForm = () => {
+    showIndividualForm.value = false
+    individualFormData.first_name = ""
+    individualFormData.last_name = ""
+    individualFormData.phone_number = ""
+    individualFormData.email = ""
+    individualFormData.compliance = false
+}
 
 const addToAssets = () => {
     assets.value.push(selectedAsset)
     selectedAsset = ''
 }
+
+let entityTypes = [
+    {type: "individual" , label: "Individual", first_name: "", last_name: "", phone_number: "", email_address: ""}
+]
 
 let assetTypes = [
   {type: "savings", label: "Savings", interest_rate: 0.5, total_value: 2000, income: 100},
