@@ -6,24 +6,24 @@
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
                 <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
-                <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="John" required>
+                <input type="text" id="first_name" placeholder="John" required>
             </div>
             <div>
                 <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-                <input type="text" id="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Doe" required>
+                <input type="text" id="last_name" placeholder="Doe" required>
             </div>
             <div>
                 <label for="company" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-                <input type="text" id="company" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Flowbite" required>
+                <input type="text" id="company" placeholder="Flowbite" required>
             </div>  
             <div>
                 <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
-                <input type="tel" id="phone" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+                <input type="tel" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
             </div>
         </div>
         <div class="mb-6">
             <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-            <input type="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="john.doe@company.com" required>
+            <input type="email" id="email" placeholder="john.doe@company.com" required>
         </div> 
         <div class="flex items-start mb-6">
             <div class="flex items-center h-5">
@@ -54,25 +54,25 @@
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ asset.label }}</h5>
                             <div>
                                 <label for="interest_rate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interest rate</label>
-                                <input v-model="asset.interest_rate" type="number" name="interest_rate" id="interest_rate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <input v-model="asset.interest_rate" type="number" name="interest_rate" id="interest_rate" required>
                             </div>
                             <div>
                                 <label for="total_value" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total value</label>
-                                <input v-model="asset.total_value" type="number" name="total_value" id="total_value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <input v-model="asset.total_value" type="number" name="total_value" id="total_value" required>
                             </div>
                             <div>
                                 <label for="income" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Income</label>
-                                <input v-model="asset.income" type="number" name="income" id="income" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <input v-model="asset.income" type="number" name="income" id="income" required>
                             </div>
                         </div>
                     </div>
 
-                    <div v-if="asset.type === 'stocks'" class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div v-if="asset.type === 'stocks'">
                         <div class="space-y-6">
                             <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ asset.label }}</h5>
                             <div>
-                                <label for="dividend_rate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dividend rate</label>
-                                <input v-model="asset.dividend_rate" type="number" name="dividend_rate" id="dividend_rate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <label for="dividend_rate">Dividend rate</label>
+                                <input v-model="asset.dividend_rate" type="number" name="dividend_rate" id="dividend_rate" required>
                             </div>
                             <div>
                                 <label for="total_value" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total value</label>
