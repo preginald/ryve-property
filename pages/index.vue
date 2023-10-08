@@ -1,12 +1,12 @@
 <template>
     <div class="p-10">
         <div>
-            <h1>RYVE Investment Strategiser</h1>
+            <h1>RYVE STRATEGIZER</h1>
         </div>
-        <label for="entity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select an entity to add</label>
+        <label for="entity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Step 1: Select an entity.</label>
         <button @click="toggleIndividualForm" type="button">Individual</button>
         <button @click="toggleIndividualForm" type="button">Company</button>
-        <div v-if="showIndividualForm" class="m-5">
+        <div v-if="showIndividualForm" class="border-2 border-slate-600 rounded-md p-5">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
                     <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
@@ -32,14 +32,14 @@
                 <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
             </div>
 
-            <button @click="addToEntities" type="button" class="mt-5">Add Entity</button>
+            <button @click="addToEntities" type="button" class="mt-5">Add Individual</button>
             
         </div>
         
         <div v-if="entities.length > 0" class="mt-10">
             <h2>Entities</h2>
             <div class="grid gap-6 mb-6 md:grid-cols-3">
-                <div v-for="entity in entities" class="m-5 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+                <div v-for="entity in entities" class="my-5 mr-5 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ entity.label }}</h5>
                     <div v-if="entity.type==='individual'" class="grid gap-6 mb-6 md:grid-cols-2">
                         <div>
@@ -59,17 +59,15 @@
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
                         <input v-model="entity.email" type="email" id="email" placeholder="john.doe@company.com" required>
                     </div> 
-                    <div class="flex items-start mb-6">
-                        <div class="flex items-center h-5">
-                        <input v-model="entity.compliance" id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
-                        </div>
-                        <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
-                    </div>
+                    <div class="mb-6">
+                        <label for="salary" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Salary</label>
+                        <input v-model="entity.salary" type="number" id="salary" placeholder="100,000" required>
+                    </div> 
                 </div>
             </div>
         </div>
         
-        <div>
+        <div v-if="entities.length > 0">
             <label for="assets" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">What is your first type of asset?</label>
             <select v-model="selectedAsset">
                 <option 
@@ -160,9 +158,9 @@
 
         </div>
 
-        <div class="mt-10">
+        <div class="mt-10" v-if="false">
             <h4>Debug</h4>
-            <div>
+            <div class="text-slate-500">
                 <p>
                     Individual form: {{ showIndividualForm }}
                 </p>
@@ -193,11 +191,12 @@ let selectedAsset = {};
 let individualFormData = {
     type: "individual", 
     label: "Individual",
-    first_name: "Peter",
-    last_name: "Reginald",
-    phone_number: "0401573619",
-    email: "peter@reginald.au",
-    compliance: false
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    email: "",
+    compliance: false,
+    salary: 0,
 }
 
 const toggleIndividualForm = () => {
