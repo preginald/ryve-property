@@ -6,34 +6,36 @@
         <label for="entity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Step 1: Select an entity.</label>
         <button @click="toggleIndividualForm" type="button">Individual</button>
         <button @click="toggleIndividualForm" type="button">Company</button>
-        <div v-if="showIndividualForm" class="border-2 border-slate-600 rounded-md p-5">
-            <div class="grid gap-6 mb-6 md:grid-cols-2">
-                <div>
-                    <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
-                    <input type="text" v-model="individualFormData.first_name" id="first_name" placeholder="John" required class="input-rounded">
-                </div>
-                <div>
-                    <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
-                    <input type="text" v-model="individualFormData.last_name" id="last_name" placeholder="Doe" required class="input-rounded">
-                </div>
-                <div>
-                    <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
-                    <input type="tel" v-model="individualFormData.phone_number" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required class="input-rounded">
-                </div>
-                <div>
-                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
-                    <input type="email" v-model="individualFormData.email" id="email" placeholder="john.doe@company.com" required class="input-rounded">
-                </div>
-            </div>
-            <div class="flex items-start mb-6">
-                <div class="flex items-center h-5">
-                <input id="remember" v-model="individualFormData.compliance" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
-                </div>
-                <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
-            </div>
 
-            <button @click="addToEntities" type="button" class="mt-5">Add Individual</button>
-            
+        <div v-if="showIndividualForm">
+            <div class="grid gap-6 mb-6 md:grid-cols-3">
+                <div class="mr-5 w-full max-w-sm p-4 bg-white border border-purple-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-purple-700">
+                    <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ individualFormData.label }}</h5>
+                        <div class="mt-3">
+                            <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                            <input type="text" v-model="individualFormData.first_name" id="first_name" placeholder="John" required class="input-rounded">
+                        </div>
+                        <div class="mt-3">
+                            <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last name</label>
+                            <input type="text" v-model="individualFormData.last_name" id="last_name" placeholder="Doe" required class="input-rounded">
+                        </div>
+                        <div class="mt-3">
+                            <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
+                            <input type="tel" v-model="individualFormData.phone_number" id="phone" placeholder="123-45-678" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required class="input-rounded">
+                        </div>
+                        <div class="mt-3">
+                            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email address</label>
+                            <input type="email" v-model="individualFormData.email" id="email" placeholder="john.doe@company.com" required class="input-rounded">
+                        </div>
+                    <div class="flex items-start my-6">
+                        <div class="flex items-center h-5">
+                        <input id="remember" v-model="individualFormData.compliance" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800" required>
+                        </div>
+                        <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
+                    </div>
+                    <button @click="addToEntities" type="button" class="mt-5">Add Individual</button>
+                </div>
+            </div>
         </div>
         
         <div v-if="entities.length > 0" class="mt-10">
