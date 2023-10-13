@@ -14,8 +14,12 @@ h2 {
     @apply text-4xl font-extrabold dark:text-white
 }
 
+h3 {
+    @apply text-2xl font-bold dark:text-white mt-3
+}
+
 h4 {
-    @apply text-2xl font-bold dark:text-white
+    @apply text-xl font-bold dark:text-white
 }
 
 /* select {
