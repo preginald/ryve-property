@@ -3,7 +3,7 @@
         <div>
             <h1>RYVE STRATEGIZER</h1>
         </div>
-        <div class="my-3">
+        <div class="my-3" v-if="entities.length">
             <h2>Dashboard</h2>
             <div class="flex">
                 <div v-if="incomeTotal > 0" class="my-5 mr-5">
@@ -18,11 +18,11 @@
             </div>
         </div>
         <label for="entity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Step 1: Select an entity.</label>
-        <button @click="toggleIndividualForm" type="button">Individual</button>
-        <button @click="toggleIndividualForm" type="button">Company</button>
+        <button @click="toggleIndividualForm" type="button" class="button-rounded">Individual</button>
+        <button @click="toggleIndividualForm" type="button" class="button-rounded">Company</button>
 
         <div v-if="showIndividualForm">
-            <div class="grid gap-6 mb-6 md:grid-cols-3">
+            <div class="grid gap-6 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 <div class="mr-5 w-full max-w-sm p-4 bg-white border border-purple-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-purple-700">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ individualFormData.label }}</h5>
                         <div class="mt-3">
@@ -47,15 +47,15 @@
                         </div>
                         <label for="remember" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">I agree with the <a href="#" class="text-blue-600 hover:underline dark:text-blue-500">terms and conditions</a>.</label>
                     </div>
-                    <button @click="addToEntities" type="button" class="mt-5">Add Individual</button>
+                    <button @click="addToEntities" type="button" class="button-rounded mt-5">Add Individual</button>
                 </div>
             </div>
         </div>
         
         <div v-if="entities.length > 0" class="mt-10">
             <h2>Entities</h2>
-            <div class="grid gap-6 mb-6 md:grid-cols-3">
-                <div v-for="entity in entities" class="my-5 mr-5 w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
+            <div class="grid gap-6 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                <div v-for="entity in entities" class="expense-card">
                     <h5 class="text-xl font-medium text-gray-900 dark:text-white">{{ entity.label }}</h5>
                     <div v-if="entity.type==='individual'" class="grid gap-6 mb-6 md:grid-cols-2">
                         <div>
@@ -92,15 +92,15 @@
         </div>
 
         <div v-if="entities.length > 0" class="mt-10">
-            <div class="">
-                <div class="">
-                    <h2>Expense - {{ expenseTotal > 0 ? "$" + expenseTotal : "" }}</h2>
-                    <div class="grid gap-6 mb-6 md:grid-cols-5">
-                        <div>
+            <div>
+                <div>
+                    <h2>Expense - {{ entityExpenseTotal > 0 ? "$" + entityExpenseTotal : "" }}</h2>
+                    <div class="my-3 grid gap-6 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                        <div class="expense-card">
                             <h3>Residence</h3>
                             <div class="my-3">
                                 <label for="Rent" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Is your primary residence rented or mortgaged?</label>
-                                    <select @change="sumExpenses()" v-model="expense.residence.type" class="select-rounded">
+                                    <select @change="sumExpense()" v-model="expense.residence.type" class="select-rounded">
                                         <option value="rent">
                                             Rent
                                         </option>
@@ -112,7 +112,7 @@
                             <div v-if="expense.residence.type ==='rent'" class="my-3">
                                 <label for="Rent" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rent {{ convertToAnnual(expense.rent.value, expense.rent.period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumExpenses()" v-model="expense.rent.value" type="number" id="rent" placeholder="100,000" required class="input-rounded-l">
+                                    <input @change="sumExpense()" v-model="expense.rent.value" type="number" id="rent" placeholder="100,000" required class="input-rounded-l">
                                     <select v-model="expense.rent.period" class="select-rounded-r">
                                         <option :value="period.value" 
                                             v-for="period in periods">
@@ -125,8 +125,8 @@
                                 <div class="my-3">
                                     <label for="Mortgage" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Morgage {{ convertToAnnual(expense.mortgage.value, expense.mortgage.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.mortgage.value" type="number" id="mortgage" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.mortgage.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.mortgage.value" type="number" id="mortgage" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.mortgage.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -137,8 +137,8 @@
                                 <div class="my-3">
                                     <label for="Rates" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rates {{ convertToAnnual(expense.rates.value, expense.rates.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.rates.value" type="number" id="rates" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.rates.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.rates.value" type="number" id="rates" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.rates.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -149,8 +149,8 @@
                                 <div class="my-3">
                                     <label for="bodycorporate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Body corporate {{ convertToAnnual(expense.bodycorporate.value, expense.bodycorporate.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.bodycorporate.value" type="number" id="bodycorporate" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.bodycorporate.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.bodycorporate.value" type="number" id="bodycorporate" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.bodycorporate.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -159,26 +159,26 @@
                                     </div>
                                 </div>
                             </div>
-                                <div class="my-3">
-                                    <label for="insurance" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Home & contents insurance {{ convertToAnnual(expense.insurance.value, expense.insurance.period) }}</label>
-                                    <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.insurance.value" type="number" id="insurance" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.insurance.period" class="select-rounded-r">
-                                            <option :value="period.value"
-                                                v-for="period in periods">
-                                                {{ period.label }}
-                                            </option>
-                                        </select>
-                                    </div>
+                            <div v-if="expense.residence.type" class="my-3">
+                                <label for="insurance" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Home & contents insurance {{ convertToAnnual(expense.insurance.value, expense.insurance.period) }}</label>
+                                <div class="flex">
+                                    <input @change="sumExpense()" v-model="expense.insurance.value" type="number" id="insurance" placeholder="3,200" required class="input-rounded-l">
+                                    <select @change="sumExpense()" v-model="expense.insurance.period" class="select-rounded-r">
+                                        <option :value="period.value"
+                                            v-for="period in periods">
+                                            {{ period.label }}
+                                        </option>
+                                    </select>
                                 </div>
+                            </div>
                         </div>
-                        <div>
+                        <div v-if="expense.residence.type" class="expense-card">
                             <h3>Utilities</h3>
                             <div class="my-3">
                                 <label for="electricity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Electricity {{ convertToAnnual(expense.electricity.value, expense.electricity.period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumExpenses()" v-model="expense.electricity.value" type="number" id="electricity" placeholder="100,000" required class="input-rounded-l">
-                                    <select @change="sumExpenses()" v-model="expense.electricity.period" class="select-rounded-r">
+                                    <input @change="sumExpense()" v-model="expense.electricity.value" type="number" id="electricity" placeholder="100,000" required class="input-rounded-l">
+                                    <select @change="sumExpense()" v-model="expense.electricity.period" class="select-rounded-r">
                                         <option :value="period.value" 
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -190,8 +190,8 @@
                                 <div class="my-3">
                                     <label for="gas" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gas {{ convertToAnnual(expense.gas.value, expense.gas.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.gas.value" type="number" id="gas" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.gas.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.gas.value" type="number" id="gas" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.gas.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -202,8 +202,8 @@
                                 <div class="my-3">
                                     <label for="water" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Water {{ convertToAnnual(expense.water.value, expense.water.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.water.value" type="number" id="rates" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.water.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.water.value" type="number" id="rates" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.water.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -214,8 +214,8 @@
                                 <div class="my-3">
                                     <label for="gardening" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gardening {{ convertToAnnual(expense.gardening.value, expense.gardening.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.gardening.value" type="number" id="gardening" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.gardening.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.gardening.value" type="number" id="gardening" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.gardening.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -226,8 +226,8 @@
                                 <div class="my-3">
                                     <label for="pool" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Pool {{ convertToAnnual(expense.pool.value, expense.pool.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.pool.value" type="number" id="pool" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.pool.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.pool.value" type="number" id="pool" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.pool.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -237,13 +237,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div v-if="expense.residence.type" class="expense-card">
                             <h3>Comms & Tech</h3>
                             <div class="my-3">
                                 <label for="landline" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Landline {{ convertToAnnual(expense.landline.value, expense.landline.period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumExpenses()" v-model="expense.landline.value" type="number" id="landline" placeholder="100,000" required class="input-rounded-l">
-                                    <select @change="sumExpenses()" v-model="expense.landline.period" class="select-rounded-r">
+                                    <input @change="sumExpense()" v-model="expense.landline.value" type="number" id="landline" placeholder="100,000" required class="input-rounded-l">
+                                    <select @change="sumExpense()" v-model="expense.landline.period" class="select-rounded-r">
                                         <option :value="period.value" 
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -255,8 +255,8 @@
                                 <div class="my-3">
                                     <label for="mobile" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mobile {{ convertToAnnual(expense.mobile.value, expense.mobile.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.mobile.value" type="number" id="mobile" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.mobile.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.mobile.value" type="number" id="mobile" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.mobile.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -267,8 +267,8 @@
                                 <div class="my-3">
                                     <label for="internet" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Internet {{ convertToAnnual(expense.internet.value, expense.internet.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.internet.value" type="number" id="internet" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.internet.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.internet.value" type="number" id="internet" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.internet.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -279,8 +279,8 @@
                                 <div class="my-3">
                                     <label for="security" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Security {{ convertToAnnual(expense.security.value, expense.security.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.security.value" type="number" id="security" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.security.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.security.value" type="number" id="security" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.security.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -290,13 +290,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div v-if="expense.residence.type" class="expense-card">
                             <h3>Vehicle</h3>
                             <div class="my-3">
                                 <label for="repayments" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repayments {{ convertToAnnual(expense.vehicle.repayments.value, expense.vehicle.repayments.period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumExpenses()" v-model="expense.vehicle.repayments.value" type="number" id="repayments" placeholder="100,000" required class="input-rounded-l">
-                                    <select @change="sumExpenses()" v-model="expense.vehicle.repayments.period" class="select-rounded-r">
+                                    <input @change="sumExpense()" v-model="expense.vehicle.repayments.value" type="number" id="repayments" placeholder="100,000" required class="input-rounded-l">
+                                    <select @change="sumExpense()" v-model="expense.vehicle.repayments.period" class="select-rounded-r">
                                         <option :value="period.value" 
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -308,8 +308,8 @@
                                 <div class="my-3">
                                     <label for="repair" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repair {{ convertToAnnual(expense.vehicle.repair.value, expense.vehicle.repair.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.vehicle.repair.value" type="number" id="repair" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.vehicle.repair.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.vehicle.repair.value" type="number" id="repair" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.vehicle.repair.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -320,8 +320,8 @@
                                 <div class="my-3">
                                     <label for="registration" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Registration {{ convertToAnnual(expense.vehicle.registration.value, expense.vehicle.registration.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.vehicle.registration.value" type="number" id="registration" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.vehicle.registration.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.vehicle.registration.value" type="number" id="registration" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.vehicle.registration.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -332,8 +332,8 @@
                                 <div class="my-3">
                                     <label for="insurance" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Insurance {{ convertToAnnual(expense.vehicle.insurance.value, expense.vehicle.insurance.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.vehicle.insurance.value" type="number" id="insurance" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.vehicle.insurance.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.vehicle.insurance.value" type="number" id="insurance" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.vehicle.insurance.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -344,8 +344,8 @@
                                 <div class="my-3">
                                     <label for="fuel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fuel {{ convertToAnnual(expense.vehicle.fuel.value, expense.vehicle.fuel.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.vehicle.fuel.value" type="number" id="fuel" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.vehicle.fuel.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.vehicle.fuel.value" type="number" id="fuel" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.vehicle.fuel.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -355,13 +355,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div v-if="expense.residence.type" class="expense-card">
                             <h3>Health & Finance</h3>
                             <div class="my-3">
                                 <label for="medical" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Medical {{ convertToAnnual(expense.medical.value, expense.medical.period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumExpenses()" v-model="expense.medical.value" type="number" id="medical" placeholder="100,000" required class="input-rounded-l">
-                                    <select @change="sumExpenses()" v-model="expense.medical.period" class="select-rounded-r">
+                                    <input @change="sumExpense()" v-model="expense.medical.value" type="number" id="medical" placeholder="100,000" required class="input-rounded-l">
+                                    <select @change="sumExpense()" v-model="expense.medical.period" class="select-rounded-r">
                                         <option :value="period.value" 
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -373,8 +373,8 @@
                                 <div class="my-3">
                                     <label for="gym" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gym & sports {{ convertToAnnual(expense.gym.value, expense.gym.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.gym.value" type="number" id="gym" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.gym.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.gym.value" type="number" id="gym" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.gym.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -385,20 +385,20 @@
                                 <div class="my-3">
                                     <label for="laundry" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Laundry {{ convertToAnnual(expense.laundry.value, expense.laundry.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.laundry.value" type="number" id="laundry" placeholder="200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.laundry.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.laundry.value" type="number" id="laundry" placeholder="200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.laundry.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
-                                            </option>
+                                            </option>0
                                         </select>
                                     </div>
                                 </div>
                                 <div class="my-3">
                                     <label for="credit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Credit repayments {{ convertToAnnual(expense.credit.value, expense.credit.period) }}</label>
                                     <div class="flex">
-                                        <input @change="sumExpenses()" v-model="expense.credit.value" type="number" id="credit" placeholder="3,200" required class="input-rounded-l">
-                                        <select @change="sumExpenses()" v-model="expense.credit.period" class="select-rounded-r">
+                                        <input @change="sumExpense()" v-model="expense.credit.value" type="number" id="credit" placeholder="3,200" required class="input-rounded-l">
+                                        <select @change="sumExpense()" v-model="expense.credit.period" class="select-rounded-r">
                                             <option :value="period.value"
                                                 v-for="period in periods">
                                                 {{ period.label }}
@@ -414,21 +414,24 @@
         </div>
         
         <div v-if="entities.length > 0">
-            <label for="assets" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">What is your first type of asset?</label>
-            <select v-model="selectedAsset" class="select-rounded">
-                <option 
-                v-for="asset in assetTypes" 
-                :value="asset">
-                {{ asset.label }}
-                </option>
-            </select>
-
-            <button @click="addToAssets" type="button" class="mt-5">Add Asset</button>
-            
+            <h2 class="my-3">My portfolio</h2>
+            <label for="assets" class="sr-only">Select an asset to add to portfolio</label>
+            <div class="flex">
+                <select v-model="selectedAsset" class="select-rounded-l-l">
+                    <option value="">Select an asset to add to your portfolio</option>
+                    <option 
+                    v-for="asset in assetTypes" 
+                    :value="asset">
+                    {{ asset.label }}
+                    </option>
+                </select>
+                <button @click="addToAssets()" type="button" class="button-rounded-r"
+                :disabled="!selectedAsset">Add Asset</button>
+            </div>
         </div>
+
         <div v-if="assets.length > 0">
-            <h2 class="mt-10">My portfolio</h2>
-            <div class="grid grid-cols-4 gap-4 mt-10">
+            <div class="my-10 grid gap-6 mb-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
                 <div v-for="asset in assets">
 
                     <div v-if="asset.type === 'savings'" class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -451,6 +454,18 @@
                                 <div class="flex">
                                     <input @change="sumIncome()" v-model="asset.income.value" type="number" name="rental_income" id="rental_income" class="input-rounded-l" required>
                                     <select @change="sumIncome()" v-model="asset.income.period" class="select-rounded-r">
+                                        <option :value="period.value"
+                                            v-for="period in periods">
+                                            {{ period.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense {{ convertToAnnual(asset.expense.value, asset.expense.period) }}</label>
+                                <div class="flex">
+                                    <input @change="sumExpense()" v-model="asset.expense.value" type="number" name="rental_expense" id="rental_expense" class="input-rounded-l" required>
+                                    <select @change="sumExpense()" v-model="asset.expense.period" class="select-rounded-r">
                                         <option :value="period.value"
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -488,6 +503,18 @@
                                     </select>
                                 </div>
                             </div>
+                            <div>
+                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense {{ convertToAnnual(asset.expense.value, asset.expense.period) }}</label>
+                                <div class="flex">
+                                    <input @change="sumExpense()" v-model="asset.expense.value" type="number" name="rental_expense" id="rental_expense" class="input-rounded-l" required>
+                                    <select @change="sumExpense()" v-model="asset.expense.period" class="select-rounded-r">
+                                        <option :value="period.value"
+                                            v-for="period in periods">
+                                            {{ period.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -515,8 +542,16 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense</label>
-                                <input v-model="asset.expense.value" type="number" name="expense" id="expense" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense {{ convertToAnnual(asset.expense.value, asset.expense.period) }}</label>
+                                <div class="flex">
+                                    <input @change="sumExpense()" v-model="asset.expense.value" type="number" name="rental_expense" id="rental_expense" class="input-rounded-l" required>
+                                    <select @change="sumExpense()" v-model="asset.expense.period" class="select-rounded-r">
+                                        <option :value="period.value"
+                                            v-for="period in periods">
+                                            {{ period.label }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -545,8 +580,16 @@
                                 </div>
                             </div>
                             <div>
-                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense</label>
-                                <input v-model="asset.expense.value" type="number" name="expense" id="expense" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                                <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense {{ convertToAnnual(asset.expense.value, asset.expense.period) }}</label>
+                                <div class="flex">
+                                    <input @change="sumExpense()" v-model="asset.expense.value" type="number" name="rental_expense" id="rental_expense" class="input-rounded-l" required>
+                                    <select @change="sumExpense()" v-model="asset.expense.period" class="select-rounded-r">
+                                        <option :value="period.value"
+                                            v-for="period in periods">
+                                            {{ period.label }}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -577,8 +620,8 @@
                             <div>
                                 <label for="expense" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Expense {{ convertToAnnual(asset.expense, asset.expense_period) }}</label>
                                 <div class="flex">
-                                    <input @change="sumIncome()" v-model="asset.expense.value" type="number" name="expense" id="expense" class="input-rounded-l" required>
-                                    <select @change="sumIncome()" v-model="asset.expense.period" class="select-rounded-r">
+                                    <input @change="sumExpense()" v-model="asset.expense.value" type="number" name="expense" id="expense" class="input-rounded-l" required>
+                                    <select @change="sumExpense()" v-model="asset.expense.period" class="select-rounded-r">
                                         <option 
                                             v-for="period in periods">
                                             {{ period.label }}
@@ -611,6 +654,9 @@
                     incomeTotal: {{ incomeTotal}}
                 </p>
                 <p>
+                    entityExpenseTotal: {{entityExpenseTotal}}
+                </p>
+                <p>
                     expenseTotal: {{ expenseTotal}}
                 </p>
                 <p>
@@ -621,6 +667,12 @@
                 </p>
                 <p>
                     assets: {{ assets }}
+                </p>
+                <p>
+                    assetIncomeTotal: {{ assetIncomeTotal}}
+                </p>
+                <p>
+                    assetExpenseTotal: {{ assetExpenseTotal }}
                 </p>
                 <p>
                     Selected asset: {{ selectedAsset }}
@@ -637,11 +689,14 @@ import Currency from '../components/dashboard/cards/currency.vue';
 let showIndividualForm = ref(false)
 let entities = ref([]);
 let assets = ref([]);
-let selectedAsset = {};  
+let selectedAsset = ref({});  
 let showDebug = true;
 let incomeTotal = ref(0)
 let salaryTotal = ref(0)
+let entityExpenseTotal = ref(0)
+let entityIncomeTotal = ref(0)
 let assetIncomeTotal = ref(0)
+let assetExpenseTotal = ref(0)
 let expenseTotal = ref(0)
 let cashflowTotal = ref(0)
 
@@ -697,10 +752,16 @@ const periods = [
     {value: "yearly", label: "Yearly"},
 ]
 
-const sumExpenses = () => {
+const sumEntityExpense = () => {
     let sum = 0;
     for (let key in expense.value) {
         if (expense.value[key].hasOwnProperty('value')) {
+            if (expense.value.residence.type === 'mortgage' && key === 'rent') {
+                continue;
+            }
+            if (expense.value.residence.type === 'rent' && ['mortgage', 'bodycorporate', 'rates'].includes(key)) {
+                continue;
+            }
             switch (expense.value[key].period) {
                 case "weekly":
                     sum += expense.value[key].value * 52;
@@ -735,8 +796,8 @@ const sumExpenses = () => {
                 }
             }
         }
+        entityExpenseTotal.value = sum
     }
-    expenseTotal.value = sum
 }
 
 const toggleIndividualForm = () => {
@@ -744,8 +805,9 @@ const toggleIndividualForm = () => {
 }
 
 const addToEntities = () => {
-    // clone individualFormData and push it to entities
-    entities.value.push({...individualFormData})
+    // deepcopy individualFormData and push it to entities
+    const deepCopy = JSON.parse(JSON.stringify(individualFormData))
+    entities.value.push(deepCopy)
     closeIndividualForm()
 }
 
@@ -795,12 +857,41 @@ const sumAssetIncome = () => {
     });
 }
 
+const sumAssetExpense = () => {
+    assetExpenseTotal.value = 0
+    // Sum all asset expense
+    assets.value.forEach(asset => {
+        let multiplier = 0;
+        switch (asset.expense.period) {
+            case "weekly":
+                multiplier = 52;
+                break;
+            case "fortnightly":
+                multiplier = 26;
+                break;
+            case "monthly":
+                multiplier = 12;
+                break;
+            case "yearly":
+                multiplier = 1;
+                break; 
+        }
+        assetExpenseTotal.value += asset.expense.value * multiplier;
+    });
+}
+
 const sumIncome = () => {
     sumSalary()
     sumAssetIncome()
     incomeTotal.value = salaryTotal.value + assetIncomeTotal.value
     cashflowTotal.value = incomeTotal.value - expenseTotal.value
-    console.log(incomeTotal.value, expenseTotal.value)
+}
+
+const sumExpense = () => {
+    sumEntityExpense()
+    sumAssetExpense()
+    expenseTotal.value = entityExpenseTotal.value + assetExpenseTotal.value
+    cashflowTotal.value = incomeTotal.value - expenseTotal.value
 }
 
 const convertToAnnual = (value: Number,period: String) => {
@@ -897,23 +988,25 @@ const closeIndividualForm = () => {
     individualFormData.phone_number = ""
     individualFormData.email = ""
     individualFormData.compliance = false
+    individualFormData.salary.value = 0
+    individualFormData.salary.period = "yearly"
 }
 
 const addToAssets = () => {
-    assets.value.push({...selectedAsset})
-    selectedAsset = ''
+    assets.value.push({...selectedAsset.value})
+    selectedAsset.value = ''
 }
 
 let assetTypes = [
-  {type: "savings", label: "Savings", interest_rate: 0.5, total_value: 2000, income:{value: 100, period: "yearly"}},
-  {type: "stocks", label: "Stocks", dividend_rate: 4.5, total_value: 5000, income: 225, income_period: "yearly"},
+  {type: "savings", label: "Savings", interest_rate: 0.5, total_value: 2000, income:{value: 100, period: "yearly"}, expense:{value:5, period: "monthly"}},
+  {type: "stocks", label: "Stocks", dividend_rate: 4.5, total_value: 5000, income: {value: 225, period: "yearly"}, expense: {value: 25, period: "yearly"}},
   {type: "real_estate_commercial", label: "Commercial Real Estate", income: {value: 9000, period: "monthly"}, expense: {value:1000, period: "monthly"}, total_value: 1000000},
   {type: "real_estate_residential", label: "Residential Real Estate", income: {value: 666, period: "weekly"}, expense: {value: 1000,period: "monthly"}, total_value: 1000000},
   {type: "collectibles", label: "Collectibles", total_value: 1000},
-  {type: "eft", label: "EFT", dividend_rate: 4.5, total_value: 5000, income: {value: 225, period: "weekly"}},
-  {type: "bonds", label: "Bonds", dividend_rate: 4.1, total_value: 10000, income: {value: 410, period: "weekly"}},
-  {type: "mutual_funds", label: "Mutual Funds", dividend_rate: 4.5, total_value: 5000, income:{value: 225, period: "weekly"}},
-  {type: "term_deposits", label: "Term Deposits", dividend_rate: 5.2, total_value: 50000, income: {value: 2600, period: "weekly"}},
+  {type: "eft", label: "EFT", dividend_rate: 4.5, total_value: 5000, income: {value: 225, period: "weekly"}, expense: {value: 225, period: "yearly"}},
+  {type: "bonds", label: "Bonds", dividend_rate: 4.1, total_value: 10000, income: {value: 410, period: "weekly"}, expense: {value: 50, period: "yearly"}},
+  {type: "mutual_funds", label: "Mutual Funds", dividend_rate: 4.5, total_value: 5000, income:{value: 225, period: "weekly"}, expense: {value:75, period: "yearly"}},
+  {type: "term_deposits", label: "Term Deposits", dividend_rate: 5.2, total_value: 50000, income: {value: 2600, period: "weekly"}, expense: {value:120, period: "yearly"}},
   {type: "business", label: "Business", income: {value: 6000, period: "monthly"}, expense: {value: 3000, pense_period: "monthly"}, total_value: 50000},
 ]
 
